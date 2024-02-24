@@ -9,17 +9,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import androidx.tracing.trace
 import page.lifty.gdsclifty.app.navigation.TopLevelDestination
 import page.lifty.gdsclifty.app.navigation.TopLevelDestination.HOME
 import page.lifty.gdsclifty.app.navigation.TopLevelDestination.MISSION
-import page.lifty.gdsclifty.app.navigation.TopLevelDestination.RECORD
+import page.lifty.gdsclifty.app.navigation.TopLevelDestination.DIARY
+import page.lifty.gdsclifty.feature.diary.navigation.DIARY_ROUTE
 import page.lifty.gdsclifty.feature.home.navigation.HOME_ROUTE
 import page.lifty.gdsclifty.feature.home.navigation.navigateToHome
 import page.lifty.gdsclifty.feature.mission.navigation.MISSION_ROUTE
 import page.lifty.gdsclifty.feature.mission.navigation.navigateToMission
-import page.lifty.gdsclifty.feature.record.navigation.RECORD_ROUTE
-import page.lifty.gdsclifty.feature.record.navigation.navigateToRecord
+import page.lifty.gdsclifty.feature.diary.navigation.navigateToDiary
 
 @Composable
 fun rememberMainAppState(
@@ -46,7 +45,7 @@ class MainAppState(
         @Composable get() = when (currentDestination?.route) {
             HOME_ROUTE -> HOME
             MISSION_ROUTE -> MISSION
-            RECORD_ROUTE -> RECORD
+            DIARY_ROUTE -> DIARY
             else -> null
         }
 
@@ -69,7 +68,7 @@ class MainAppState(
         when (topLevelDestination) {
             HOME -> navController.navigateToHome(topLevelNavOptions)
             MISSION -> navController.navigateToMission(topLevelNavOptions)
-            RECORD -> navController.navigateToRecord(topLevelNavOptions)
+            DIARY -> navController.navigateToDiary(topLevelNavOptions)
         }
     }
 }

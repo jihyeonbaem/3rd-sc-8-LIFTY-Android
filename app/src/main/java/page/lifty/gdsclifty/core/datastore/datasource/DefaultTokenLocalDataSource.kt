@@ -49,12 +49,7 @@ class DefaultTokenLocalDataSource @Inject constructor(
         }
 
     companion object {
-        val REFRESH_TOKEN_KEY = stringPreferencesKey(
-            name = "refreshToken"
-        )
-
-        val ACCESS_TOKEN_KEY = stringPreferencesKey(
-            name = "accessToken"
-        )
+        private val REFRESH_TOKEN_KEY = stringPreferencesKey("refreshToken")
+        private val ACCESS_TOKEN_KEY = stringPreferencesKey("accessToken")
     }
 }

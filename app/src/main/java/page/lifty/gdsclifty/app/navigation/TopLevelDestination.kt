@@ -26,8 +26,8 @@ enum class TopLevelDestination(
         Icons.Filled.Favorite,
         Icons.Outlined.FavoriteBorder,
     ),
-    RECORD(
-        R.string.record,
+    DIARY(
+        R.string.diary,
         Icons.Filled.Create,
         Icons.Outlined.Create,
     ),

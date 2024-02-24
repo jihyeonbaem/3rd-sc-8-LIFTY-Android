@@ -3,6 +3,6 @@
 
     <string name="home">Home</string>
     <string name="mission">Mission</string>
-    <string name="record">Record</string>
+    <string name="diary">Diary</string>
     <string name="asset_statements" translatable="false">[{ \"include\": \"https://dev.api.lifty.page/.well-known/assetlinks.json\" }]</string>
 </resources>

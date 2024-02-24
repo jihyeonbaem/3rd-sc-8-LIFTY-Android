@@ -22,8 +22,7 @@ class LoginViewModel @Inject constructor(
     defaultGetRefreshTokenUseCase: DefaultGetRefreshTokenUseCase,
 ) : ViewModel() {
 
-    val getAccessToken =
-        defaultGetAccessTokenUseCase.invoke()
+    val getAccessToken = defaultGetAccessTokenUseCase()
             .map { it }
             .onCompletion { }
             .onStart { }

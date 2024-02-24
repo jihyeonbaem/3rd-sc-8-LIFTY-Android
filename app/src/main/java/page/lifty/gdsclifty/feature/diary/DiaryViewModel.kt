@@ -1,4 +1,4 @@
-package page.lifty.gdsclifty.feature.home
+package page.lifty.gdsclifty.feature.diary
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -11,22 +11,19 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
-import page.lifty.gdsclifty.core.domain.usecase.userinfo.GetUserInfoUseCase
-import page.lifty.gdsclifty.feature.home.HomeContract.UserInfoUiState
+import page.lifty.gdsclifty.core.domain.usecase.diary.GetDiaryUseCase
+import page.lifty.gdsclifty.feature.diary.DiaryContract.DiaryUiState
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    getUserInfoUseCase: GetUserInfoUseCase,
+class DiaryViewModel @Inject constructor(
+    getDiaryUseCase: GetDiaryUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-
-    val userInfoUiState: StateFlow<UserInfoUiState> = getUserInfoUseCase()
+    val diaryUiState: StateFlow<DiaryUiState> = getDiaryUseCase()
         .map {
-            UserInfoUiState.Success(
-                userInfo = it
-            )
+            DiaryUiState.Success(diary = it)
         }
         .onStart {
             Timber.d("onStart")
@@ -40,6 +37,6 @@ class HomeViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = UserInfoUiState.Loading
+            initialValue = DiaryUiState.Loading
         )
 }

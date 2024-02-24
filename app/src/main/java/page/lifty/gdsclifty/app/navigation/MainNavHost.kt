@@ -4,14 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
 import page.lifty.gdsclifty.app.ui.MainAppState
-import page.lifty.gdsclifty.app.navigation.TopLevelDestination.HOME
 import page.lifty.gdsclifty.feature.home.navigation.HOME_GRAPH_ROUTE_PATTERN
 import page.lifty.gdsclifty.feature.home.navigation.homeNavGraph
 import page.lifty.gdsclifty.feature.login.navigation.LOGIN_GRAPH_ROUTE_PATTERN
 import page.lifty.gdsclifty.feature.login.navigation.loginNavGraph
 import page.lifty.gdsclifty.feature.mission.navigation.missionNavGraph
-import page.lifty.gdsclifty.feature.record.navigation.navigateToRecordDetail
-import page.lifty.gdsclifty.feature.record.navigation.recordNavGraph
+import page.lifty.gdsclifty.feature.diary.navigation.navigateToDiaryDetail
+import page.lifty.gdsclifty.feature.diary.navigation.diaryNavGraph
 
 @Composable
 fun MainNavHost(
@@ -38,8 +37,8 @@ fun MainNavHost(
         )
         homeNavGraph()
         missionNavGraph()
-        recordNavGraph(
-            onRecordDetailClick = navController::navigateToRecordDetail,
+        diaryNavGraph(
+            onDiaryDetailClick = navController::navigateToDiaryDetail,
             onBackClick = navController::popBackStack,
         )
     }

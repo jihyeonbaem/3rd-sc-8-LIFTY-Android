@@ -1,4 +1,4 @@
-package page.lifty.gdsclifty.feature.record
+package page.lifty.gdsclifty.feature.diary.detail
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
@@ -6,22 +6,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun RecordDetailRoute(
+internal fun DiaryDetailRoute(
     onBackClick: () -> Unit,
 ) {
-    RecordDetailScreen(
+    DiaryDetailScreen(
         onBackClick = onBackClick,
     )
 }
 
 @Composable
-fun RecordDetailScreen(
+internal fun DiaryDetailScreen(
     onBackClick: () -> Unit,
 ) {
     Column {
         Button(onClick = onBackClick) {
             Text(text = "back")
         }
-        Text(text = "RecordDetail")
+        Text(text = "DiaryDetail")
     }
 }

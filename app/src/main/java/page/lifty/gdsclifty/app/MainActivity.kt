@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
                 MainApp(
                     // viewModel을 사용해서 isLogin이 true면 HOME_GRAPH로
                     // isLogin이 false면 LOGIN_GRAPH로
-                    startDestination = if (true) HOME_GRAPH_ROUTE_PATTERN else LOGIN_GRAPH_ROUTE_PATTERN
+                    startDestination = if (false) HOME_GRAPH_ROUTE_PATTERN else LOGIN_GRAPH_ROUTE_PATTERN
                 )
             }
         }

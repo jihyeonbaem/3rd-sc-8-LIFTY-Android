@@ -7,11 +7,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -31,29 +34,26 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
-import page.lifty.gdsclifty.core.network.model.response.UserInfoData
-import page.lifty.gdsclifty.core.network.model.response.UserInfoResponse
+import page.lifty.gdsclifty.feature.home.HomeContract.UserInfoUiState
 
 @Composable
-fun HomeRoute(
-
+internal fun HomeRoute(
+    modifier: Modifier = Modifier,
+    homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
-    HomeScreen(
+    val userInfoUiState by remember(homeViewModel) { homeViewModel.userInfoUiState }.collectAsStateWithLifecycle()
 
+    HomeScreen(
+        modifier = modifier,
+        userInfoUiState = userInfoUiState
     )
 }
 
 @Composable
-fun HomeScreen(
+internal fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = hiltViewModel(),
+    userInfoUiState: UserInfoUiState = UserInfoUiState.Loading,
 ) {
-
-    val userUiState by remember(viewModel) { viewModel.userUiState }
-        .collectAsStateWithLifecycle(
-            initialValue = UserInfoResponse(-1, "", UserInfoData("", "", -1, -1))
-        )
-
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -62,11 +62,18 @@ fun HomeScreen(
     ) {
         Column {
             Spacer(modifier = Modifier.size(20.dp))
-            레벨(
-                profileImageUrl = userUiState.data.profileUri,
-                현재레벨 = userUiState.data.level,
-                현재경험치 = userUiState.data.exp
-            )
+            when (userInfoUiState) {
+                UserInfoUiState.Loading,
+                -> Unit
+
+                is UserInfoUiState.Success -> {
+                    레벨(
+                        profileImageUrl = userInfoUiState.userInfo.userInfoData.profileUri,
+                        현재레벨 = userInfoUiState.userInfo.userInfoData.level,
+                        현재경험치 = userInfoUiState.userInfo.userInfoData.exp,
+                    )
+                }
+            }
             Spacer(modifier = Modifier.size(20.dp))
             캐릭터(modifier = Modifier.weight(1f))
             Spacer(modifier = Modifier.size(20.dp))
@@ -74,6 +81,9 @@ fun HomeScreen(
             Spacer(modifier = Modifier.size(40.dp))
         }
     }
+
+    // 시스템 UI(키보드, 시스템 네비게이션바 등)가 콘텐츠를 가릴 수 있는 영역
+    Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
 }
 
 @Composable

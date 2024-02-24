@@ -2,17 +2,20 @@ package page.lifty.gdsclifty.feature.mission
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
 @Composable
-fun MissionRoute(
-
+internal fun MissionRoute(
+    modifier: Modifier = Modifier,
 ) {
-    MissionScreen()
+    MissionScreen(
+        modifier = modifier
+    )
 }
 
 @Composable
-fun MissionScreen(
-    
+internal fun MissionScreen(
+    modifier: Modifier = Modifier,
 ) {
     Text(text = "Mission")
 }

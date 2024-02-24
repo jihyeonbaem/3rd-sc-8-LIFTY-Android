@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun LoginRoute(
+internal fun LoginRoute(
     onHomeClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -33,7 +33,7 @@ const val GOOGLE_LOGIN_URL = "https://dev.api.lifty.page/oauth2/authorization/go
 
 
 @Composable
-fun LoginScreen(
+internal fun LoginScreen(
     loginViewModel: LoginViewModel = hiltViewModel(),
     onGoogleLoginClick: () -> Unit,
     onHomeClick: () -> Unit,

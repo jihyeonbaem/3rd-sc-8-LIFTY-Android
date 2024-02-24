@@ -7,19 +7,19 @@ import kotlinx.coroutines.flow.flowOn
 import page.lifty.gdsclifty.core.common.network.Dispatcher
 import page.lifty.gdsclifty.core.common.network.MainDispatchers.IO
 import page.lifty.gdsclifty.core.network.ktor.Ktor
-import page.lifty.gdsclifty.core.network.model.response.UserInfoResponse
+import page.lifty.gdsclifty.core.network.model.response.DiaryResponse
 import javax.inject.Inject
 
-//interface UserRemoteDataSource {
-//    val getUser: Flow<UserResponse>
-//}
+interface DiaryRemoteDataSource {
+    val getDiary: Flow<DiaryResponse>
+}
 
-class DefaultUserInfoRemoteDataSource @Inject constructor(
+class DefaultDiaryRemoteDataSource @Inject constructor(
     private val ktor: Ktor,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-) {
-    val getUser: Flow<UserInfoResponse> = flow {
-        val gew = ktor.getUserInfo()
-        emit(gew)
+) : DiaryRemoteDataSource {
+    override val getDiary: Flow<DiaryResponse> = flow {
+        val diary = ktor.getDiary()
+        emit(diary)
     }.flowOn(ioDispatcher)
 }

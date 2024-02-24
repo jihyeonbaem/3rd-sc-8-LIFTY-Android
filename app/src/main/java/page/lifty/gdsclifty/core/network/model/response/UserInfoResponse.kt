@@ -1,12 +1,14 @@
 package page.lifty.gdsclifty.core.network.model.response
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserInfoResponse(
     val code: Int,
     val message: String,
-    val data: UserInfoData,
+    @SerialName("data")
+    val userInfoData: UserInfoData,
 )
 
 @Serializable
