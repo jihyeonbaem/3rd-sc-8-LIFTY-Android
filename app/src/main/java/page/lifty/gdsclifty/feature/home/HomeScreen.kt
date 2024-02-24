@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
-import page.lifty.gdsclifty.core.network.model.response.Data
-import page.lifty.gdsclifty.core.network.model.response.UserResponse
+import page.lifty.gdsclifty.core.network.model.response.UserInfoData
+import page.lifty.gdsclifty.core.network.model.response.UserInfoResponse
 
 @Composable
 fun HomeRoute(
@@ -51,8 +51,9 @@ fun HomeScreen(
 
     val userUiState by remember(viewModel) { viewModel.userUiState }
         .collectAsStateWithLifecycle(
-            initialValue = UserResponse(-1, "", Data("", "", -1, -1))
+            initialValue = UserInfoResponse(-1, "", UserInfoData("", "", -1, -1))
         )
+
     Box(
         modifier = modifier
             .fillMaxSize()

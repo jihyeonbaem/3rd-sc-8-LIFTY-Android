@@ -3,16 +3,15 @@ package page.lifty.gdsclifty.core.network.model.response
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserResponse(
+data class DiaryResponse(
     val code: Int,
     val message: String,
-    val data: Data
+    val data: List<DiaryData>,
 )
 
 @Serializable
-data class Data(
-    val name: String,
-    val profileUri: String,
-    val level: Int,
-    val exp: Int,
+data class DiaryData(
+    val date: String,
+    val content: String,
+    val keywords: List<String>,
 )

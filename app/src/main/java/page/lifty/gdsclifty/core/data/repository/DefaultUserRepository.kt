@@ -8,15 +8,15 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import page.lifty.gdsclifty.core.common.network.Dispatcher
 import page.lifty.gdsclifty.core.common.network.MainDispatchers.Default
-import page.lifty.gdsclifty.core.network.datasource.DefaultUserRemoteDataSource
-import page.lifty.gdsclifty.core.network.model.response.UserResponse
+import page.lifty.gdsclifty.core.network.datasource.DefaultUserInfoRemoteDataSource
+import page.lifty.gdsclifty.core.network.model.response.UserInfoResponse
 import javax.inject.Inject
 
 class DefaultUserRepository @Inject constructor(
-    private val defaultUserRemoteDataSource: DefaultUserRemoteDataSource,
+    private val defaultUserRemoteDataSource: DefaultUserInfoRemoteDataSource,
     @Dispatcher(Default) private val defaultDispatcher: CoroutineDispatcher,
 ) {
-    val getUser: Flow<UserResponse> = defaultUserRemoteDataSource.getUser
+    val getUser: Flow<UserInfoResponse> = defaultUserRemoteDataSource.getUser
         .map { it }
         .onEach { }
         .flowOn(defaultDispatcher)
