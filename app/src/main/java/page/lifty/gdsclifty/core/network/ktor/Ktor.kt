@@ -13,9 +13,12 @@ import io.ktor.client.plugins.resources.Resources
 import io.ktor.client.plugins.resources.get
 import io.ktor.client.plugins.resources.post
 import io.ktor.client.request.header
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.URLProtocol
+import io.ktor.http.contentType
 import io.ktor.http.headers
 import io.ktor.http.path
 import io.ktor.serialization.kotlinx.json.json
@@ -32,7 +35,7 @@ class Ktor @Inject constructor(
     engine: HttpClientEngine,
 ) {
     private val accessToken =
-        "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJnZHNjbGlmdHl0ZXN0QGdtYWlsLmNvbSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE3MDg4MTM3MTZ9.3-XmcqukNi93Nu6OFBQBlxQnx62yjuGhd2ZX3b74ek_NwJHXMO_YNygFawRA_jBSnzfIdSvi0RS-fCczK9m7EA"
+        "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJnZHNjbGlmdHl0ZXN0QGdtYWlsLmNvbSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE3MDg4OTUxMzh9.S-gcJ5zkElbiiPpEmXLjKePgvcS_cTPC6S68P57bP0tdH5NRIllRLBwgwMfg5GQ3-Z41iKP7q5qa6vgRd1QpCg"
     val httpClient = HttpClient(engine) {
         expectSuccess = true
         install(Resources)
@@ -43,6 +46,8 @@ class Ktor @Inject constructor(
                 path("api/v1/")
             }
             headers {
+                contentType(ContentType.Application.Json)
+                header(HttpHeaders.Accept, ContentType.Text.EventStream)
                 header(HttpHeaders.Accept, ContentType.Application.Json)
                 header(HttpHeaders.AcceptCharset, Charsets.UTF_8)
                 header(HttpHeaders.Authorization, "Bearer $accessToken")
@@ -79,7 +84,9 @@ class Ktor @Inject constructor(
     suspend fun getDiary(): DiaryResponse = httpClient.get(resource = Diary()).body()
 
     // Chat
-    suspend fun postChat(): ChatRequest = httpClient.post(resource = Chat()).body()
+    suspend fun postChat(chatRequest: ChatRequest): String = httpClient.post(resource = Chat()) {
+        setBody(chatRequest)
+    }.bodyAsText()
 
     companion object {
         const val TIMEOUT_REQUEST: Long = 10_000

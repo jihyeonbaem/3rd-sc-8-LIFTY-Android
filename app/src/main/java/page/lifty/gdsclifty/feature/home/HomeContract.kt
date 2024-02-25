@@ -1,5 +1,6 @@
 package page.lifty.gdsclifty.feature.home
 
+import page.lifty.gdsclifty.core.network.model.request.ChatRequest
 import page.lifty.gdsclifty.core.network.model.response.UserInfoResponse
 
 object HomeContract {
@@ -8,5 +9,12 @@ object HomeContract {
         data class Success(
             val userInfo: UserInfoResponse,
         ) : UserInfoUiState
+    }
+
+    sealed interface ChatUiState {
+        data object Loading : ChatUiState
+        data class Success(
+            val chat: String,
+        ) : ChatUiState
     }
 }

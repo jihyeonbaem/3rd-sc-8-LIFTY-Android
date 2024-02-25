@@ -11,19 +11,26 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,25 +41,46 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
+import page.lifty.gdsclifty.core.network.model.request.ChatRequest
 import page.lifty.gdsclifty.feature.home.HomeContract.UserInfoUiState
+import page.lifty.gdsclifty.feature.home.HomeContract.ChatUiState
+
 
 @Composable
 internal fun HomeRoute(
     modifier: Modifier = Modifier,
     homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
-    val userInfoUiState by remember(homeViewModel) { homeViewModel.userInfoUiState }.collectAsStateWithLifecycle()
+    val userInfoUiState by remember(homeViewModel) {
+        homeViewModel.userInfoUiState
+    }.collectAsStateWithLifecycle()
+    //
+    val chatUiState by remember(homeViewModel) {
+        homeViewModel.chatUiState
+    }.collectAsStateWithLifecycle()
+    //
+    val chatQuery by remember(homeViewModel) {
+        homeViewModel.chatQuery
+    }.collectAsStateWithLifecycle()
 
     HomeScreen(
         modifier = modifier,
-        userInfoUiState = userInfoUiState
+        onChatClick = homeViewModel::postChat,
+        userInfoUiState = userInfoUiState,
+        chatUiState = chatUiState,
+        chatQuery = chatQuery,
+        onChatQueryChange = homeViewModel::updateChatQuery,
     )
 }
 
 @Composable
 internal fun HomeScreen(
     modifier: Modifier = Modifier,
+    chatQuery: String = "",
+    onChatQueryChange: (String) -> Unit = {},
+    onChatClick: () -> Unit = {},
     userInfoUiState: UserInfoUiState = UserInfoUiState.Loading,
+    chatUiState: ChatUiState = ChatUiState.Loading,
 ) {
     Box(
         modifier = modifier
@@ -74,10 +102,37 @@ internal fun HomeScreen(
                     )
                 }
             }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 100.dp)
+            ) {
+                when (chatUiState) {
+                    ChatUiState.Loading,
+                    -> Unit
+
+                    is ChatUiState.Success -> {
+                        Text(text = chatUiState.chat)
+                    }
+                }
+            }
             Spacer(modifier = Modifier.size(20.dp))
-            캐릭터(modifier = Modifier.weight(1f))
+            캐릭터(
+                modifier = Modifier.weight(1f),
+                chatBotImageUrl = "https://storage.googleapis.com/lifty-bucket/ThreeDee%20Male.png"
+            )
             Spacer(modifier = Modifier.size(20.dp))
-            대화()
+
+
+
+            대화(
+                chatQuery = chatQuery,
+                onChatQueryChange = onChatQueryChange,
+                onChatClick = onChatClick
+            )
+
+
+
             Spacer(modifier = Modifier.size(40.dp))
         }
     }
@@ -88,25 +143,22 @@ internal fun HomeScreen(
 
 @Composable
 fun 캐릭터(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    chatBotImageUrl: String,
 ) {
+    val painter = rememberAsyncImagePainter(chatBotImageUrl)
+
     Box(
         modifier = modifier.fillMaxWidth(),
     ) {
-        Icon(
+        Image(
             modifier = Modifier.matchParentSize(),
-            imageVector = Icons.Default.Favorite,
-            contentDescription = ""
+            painter = painter,
+            contentDescription = "chatBotImage"
         )
     }
 }
 
-/**
- * 자신의 내용만큼 최소한의 높이를 차지
- * .height(intrinsicSize = IntrinsicSize.Min)
- * 부모 컨테이너의 제약 내에서 최대한의 높이를 차지
- * .height(intrinsicSize = IntrinsicSize.Min)
- */
 @Composable
 fun 레벨(
     modifier: Modifier = Modifier,
@@ -132,7 +184,7 @@ fun 레벨(
             Row {
                 Image(
                     painter = painter,
-                    contentDescription = null
+                    contentDescription = "profileImage"
                 )
                 Spacer(modifier = Modifier.size(12.dp))
                 Column {
@@ -157,7 +209,10 @@ fun 레벨(
 
 @Composable
 fun 대화(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onChatClick: () -> Unit,
+    chatQuery: String,
+    onChatQueryChange: (String) -> Unit,
 ) {
     Box(
         modifier = modifier
@@ -172,7 +227,13 @@ fun 대화(
                 .background(Color.White)
                 .paddingTextField()
         ) {
-            Text(text = "같이 놀자!", modifier = Modifier.align(Alignment.CenterVertically))
+            BasicTextField(
+                value = chatQuery,
+                onValueChange = onChatQueryChange,
+            )
+            Button(onClick = onChatClick) {
+                Text(text = "send chat")
+            }
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 modifier = Modifier.size(24.dp),
@@ -188,6 +249,7 @@ fun 대화(
         }
     }
 }
+
 
 @Composable
 private fun Modifier.paddingTextField(): Modifier =
@@ -205,16 +267,6 @@ private fun Modifier.roundedCorner(dp: Dp): Modifier = this then Modifier.clip(
         topEnd = dp,
         bottomStart = dp,
         bottomEnd = dp,
-    )
-)
-
-@Composable
-private fun Modifier.roundedCorner(percent: Int): Modifier = this then Modifier.clip(
-    RoundedCornerShape(
-        topStartPercent = percent,
-        topEndPercent = percent,
-        bottomStartPercent = percent,
-        bottomEndPercent = percent,
     )
 )
 

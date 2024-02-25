@@ -4,6 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import page.lifty.gdsclifty.core.domain.usecase.chat.DefaultPostChatUseCase
+import page.lifty.gdsclifty.core.domain.usecase.chat.PostChatUseCase
 import page.lifty.gdsclifty.core.domain.usecase.diary.DefaultGetDiaryUseCase
 import page.lifty.gdsclifty.core.domain.usecase.userinfo.DefaultGetUserInfoUseCase
 import page.lifty.gdsclifty.core.domain.usecase.diary.GetDiaryUseCase
@@ -20,4 +22,8 @@ abstract class UseCaseModule {
     @Singleton
     @Binds
     abstract fun bindGetDiaryUseCase(default: DefaultGetDiaryUseCase): GetDiaryUseCase
+
+    @Singleton
+    @Binds
+    abstract fun bindPostChatUseCase(default: DefaultPostChatUseCase): PostChatUseCase
 }
