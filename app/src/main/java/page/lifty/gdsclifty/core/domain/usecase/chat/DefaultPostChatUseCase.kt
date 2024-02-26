@@ -8,5 +8,6 @@ class DefaultPostChatUseCase @Inject constructor(
     private val postRepository: ChatRepository,
 ) : PostChatUseCase {
     override suspend operator fun invoke(chatRequest: ChatRequest): String =
-        postRepository.postChat(chatRequest)
+        postRepository.postChat(chatRequest).removePrefix("data:")
+
 }

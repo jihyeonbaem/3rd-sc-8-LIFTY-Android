@@ -1,17 +1,14 @@
 package page.lifty.gdsclifty.feature.home
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
@@ -45,7 +42,11 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _chatUiState.value =
                 ChatUiState.Success(postChatUseCase(ChatRequest(chatQuery.value, false)))
+            resetChatQuery()
         }
+    }
+    private fun resetChatQuery() {
+        savedStateHandle[CHAT_QUERY] = ""
     }
 
     val userInfoUiState: StateFlow<UserInfoUiState> = getUserInfoUseCase()
@@ -72,9 +73,3 @@ class HomeViewModel @Inject constructor(
 }
 
 private const val CHAT_QUERY = "chatQuery"
-
-//fun postChat(chatRequest: ChatRequest) {
-//    viewModelScope.launch {
-//        _chatUiState.value = ChatUiState.Success(chat = postChatUseCase(chatRequest))
-//    }
-//}

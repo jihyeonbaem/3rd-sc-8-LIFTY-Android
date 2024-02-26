@@ -1,6 +1,5 @@
 package page.lifty.gdsclifty.feature.home
 
-import page.lifty.gdsclifty.core.network.model.request.ChatRequest
 import page.lifty.gdsclifty.core.network.model.response.UserInfoResponse
 
 object HomeContract {

@@ -1,5 +1,7 @@
 package page.lifty.gdsclifty.feature.home
 
+import android.graphics.Paint.Align
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,35 +18,41 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
-import page.lifty.gdsclifty.core.network.model.request.ChatRequest
+import page.lifty.gdsclifty.R
+import page.lifty.gdsclifty.core.designsystem.component.LiftyIcon
+import page.lifty.gdsclifty.core.designsystem.component.LiftySurface
+import page.lifty.gdsclifty.core.designsystem.component.LiftyText
 import page.lifty.gdsclifty.feature.home.HomeContract.UserInfoUiState
 import page.lifty.gdsclifty.feature.home.HomeContract.ChatUiState
-
 
 @Composable
 internal fun HomeRoute(
@@ -54,11 +62,11 @@ internal fun HomeRoute(
     val userInfoUiState by remember(homeViewModel) {
         homeViewModel.userInfoUiState
     }.collectAsStateWithLifecycle()
-    //
+
     val chatUiState by remember(homeViewModel) {
         homeViewModel.chatUiState
     }.collectAsStateWithLifecycle()
-    //
+
     val chatQuery by remember(homeViewModel) {
         homeViewModel.chatQuery
     }.collectAsStateWithLifecycle()
@@ -96,26 +104,26 @@ internal fun HomeScreen(
 
                 is UserInfoUiState.Success -> {
                     레벨(
-                        profileImageUrl = userInfoUiState.userInfo.userInfoData.profileUri,
+                        profileImageUrl = "https://storage.googleapis.com/lifty-bucket/ThreeDee%20Male.png",
                         현재레벨 = userInfoUiState.userInfo.userInfoData.level,
                         현재경험치 = userInfoUiState.userInfo.userInfoData.exp,
                     )
                 }
             }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 100.dp)
-            ) {
-                when (chatUiState) {
-                    ChatUiState.Loading,
-                    -> Unit
+            Spacer(modifier = Modifier.size(20.dp))
+            when (chatUiState) {
+                ChatUiState.Loading,
+                -> Unit
 
-                    is ChatUiState.Success -> {
+                is ChatUiState.Success -> {
+                    LiftySurface(
+                        modifier = Modifier.padding(start = 30.dp, end = 30.dp),
+                    ) {
                         Text(text = chatUiState.chat)
                     }
                 }
             }
+
             Spacer(modifier = Modifier.size(20.dp))
             캐릭터(
                 modifier = Modifier.weight(1f),
@@ -140,6 +148,8 @@ internal fun HomeScreen(
     // 시스템 UI(키보드, 시스템 네비게이션바 등)가 콘텐츠를 가릴 수 있는 영역
     Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
 }
+
+
 
 @Composable
 fun 캐릭터(
@@ -181,16 +191,22 @@ fun 레벨(
                 .background(Color.White)
                 .paddingLevel()
         ) {
-            Row {
+            Row(
+                modifier = Modifier,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Image(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape),
                     painter = painter,
                     contentDescription = "profileImage"
                 )
                 Spacer(modifier = Modifier.size(12.dp))
                 Column {
-                    Text(text = "Level $현재레벨")
+                    LiftyText(text = "Level $현재레벨")
                     Spacer(modifier = Modifier.size(4.dp))
-                    Text(text = "$현재경험치 / 100")
+                    LiftyText(text = "$현재경험치 / 100")
                 }
             }
             Spacer(modifier = Modifier.size(16.dp))
@@ -214,6 +230,8 @@ fun 대화(
     chatQuery: String,
     onChatQueryChange: (String) -> Unit,
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -225,27 +243,38 @@ fun 대화(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
-                .paddingTextField()
+                .paddingTextField(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             BasicTextField(
+                modifier = Modifier.weight(1f),
                 value = chatQuery,
                 onValueChange = onChatQueryChange,
             )
-            Button(onClick = onChatClick) {
-                Text(text = "send chat")
+            IconButton(
+                onClick = {
+                    onChatClick()
+                    keyboardController?.hide()
+                }
+            ) {
+                LiftyIcon(
+                    imageVector = Icons.Default.Send,
+                    contentDescription = "send message"
+                )
             }
-            Spacer(modifier = Modifier.weight(1f))
-            Icon(
+            Spacer(modifier = Modifier.size(8.dp))
+            Image(
                 modifier = Modifier.size(24.dp),
-                imageVector = Icons.Default.Favorite,
-                contentDescription = "음성채팅"
+                imageVector = ImageVector.vectorResource(id = R.drawable.mic_icon),
+                contentDescription = "google_icon"
             )
             Spacer(modifier = Modifier.size(8.dp))
-            Icon(
+            Image(
                 modifier = Modifier.size(24.dp),
-                imageVector = Icons.Default.Favorite,
-                contentDescription = "사진보내기"
+                imageVector = ImageVector.vectorResource(id = R.drawable.camera_icon),
+                contentDescription = "google_icon"
             )
+
         }
     }
 }

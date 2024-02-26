@@ -12,6 +12,8 @@ import io.ktor.client.plugins.observer.ResponseObserver
 import io.ktor.client.plugins.resources.Resources
 import io.ktor.client.plugins.resources.get
 import io.ktor.client.plugins.resources.post
+import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.header
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
@@ -34,8 +36,7 @@ import javax.inject.Inject
 class Ktor @Inject constructor(
     engine: HttpClientEngine,
 ) {
-    private val accessToken =
-        "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJnZHNjbGlmdHl0ZXN0QGdtYWlsLmNvbSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE3MDg4OTUxMzh9.S-gcJ5zkElbiiPpEmXLjKePgvcS_cTPC6S68P57bP0tdH5NRIllRLBwgwMfg5GQ3-Z41iKP7q5qa6vgRd1QpCg"
+    private val accessToken = ""
     val httpClient = HttpClient(engine) {
         expectSuccess = true
         install(Resources)
@@ -87,6 +88,7 @@ class Ktor @Inject constructor(
     suspend fun postChat(chatRequest: ChatRequest): String = httpClient.post(resource = Chat()) {
         setBody(chatRequest)
     }.bodyAsText()
+
 
     companion object {
         const val TIMEOUT_REQUEST: Long = 10_000

@@ -45,16 +45,16 @@ internal fun DiaryRoute(
 
     DiaryScreen(
         modifier = modifier,
-        onDiaryDetailClick = onDiaryDetailClick,
+        onDiaryDetailClick = { },
         diaryUiState = diaryUiState,
-        isDiaryExpanded = false,
+        isDiaryExpanded = true,
     )
 }
 
 @Composable
 internal fun DiaryScreen(
     modifier: Modifier = Modifier,
-    onDiaryDetailClick: () -> Unit,
+    onDiaryDetailClick: () -> Unit = {},
     diaryUiState: DiaryUiState = DiaryUiState.Loading,
     isDiaryExpanded: Boolean = false,
 ) {
@@ -94,7 +94,7 @@ fun DiaryItem(
     modifier: Modifier = Modifier,
     onDiaryDetailClick: () -> Unit,
     diary: DiaryData,
-    isExpanded: Boolean = false,
+    isExpanded: Boolean,
 ) {
     LiftyCard(
         onClick = onDiaryDetailClick,
@@ -104,9 +104,6 @@ fun DiaryItem(
             LazyRow(
                 modifier = Modifier.paddingCard(),
             ) {
-                item {
-                    LiftyText(text = "오늘의 생각")
-                }
                 items(diary.keywords) { keyword ->
                     DiaryEmotion(emotion = keyword)
                     LiftySpacer(size = 8.dp)
@@ -161,7 +158,7 @@ fun DiaryItemPreview() {
     val isDiaryExpanded = remember { mutableStateOf(false) }
     DiaryScreen(
         isDiaryExpanded = isDiaryExpanded.value,
-        onDiaryDetailClick = {isDiaryExpanded.value = !isDiaryExpanded.value},
+        onDiaryDetailClick = { isDiaryExpanded.value = !isDiaryExpanded.value },
         diaryUiState = DiaryUiState.Success(
             diary = DiaryResponse(
                 code = 0,

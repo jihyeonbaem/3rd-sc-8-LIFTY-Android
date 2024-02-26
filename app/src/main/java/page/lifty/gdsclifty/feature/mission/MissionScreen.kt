@@ -7,12 +7,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImagePainter.State.Empty.painter
 import coil.compose.rememberAsyncImagePainter
 
 @Composable
@@ -53,17 +51,12 @@ private fun 개발대기(
     val missionTextPainter = rememberAsyncImagePainter(missionTextUrl)
     val missionImagePainter = rememberAsyncImagePainter(missionImageUrl)
 
-    Box(
+    Column(
         modifier = modifier.fillMaxWidth(),
     ) {
         Image(
-            modifier = Modifier.matchParentSize(),
+            modifier = Modifier.fillMaxSize(),
             painter = missionImagePainter,
-            contentDescription = "missionImage"
-        )
-        Image(
-            modifier = Modifier.matchParentSize(),
-            painter = missionTextPainter,
             contentDescription = "missionImage"
         )
     }

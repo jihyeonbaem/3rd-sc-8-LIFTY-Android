@@ -1,12 +1,15 @@
 package page.lifty.gdsclifty.app
 
-import android.service.autofill.UserData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import page.lifty.gdsclifty.app.MainActivityContract.MainActivityUiState
+import page.lifty.gdsclifty.core.data.repository.UserDataRepository
 import page.lifty.gdsclifty.core.domain.usecase.DefaultSaveAccessTokenUseCase
 import page.lifty.gdsclifty.core.domain.usecase.DefaultSaveRefreshTokenUseCase
 import javax.inject.Inject
@@ -21,9 +24,20 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
+    userDataRepository: UserDataRepository,
     private val defaultSaveAccessTokenUseCase: DefaultSaveAccessTokenUseCase,
     private val defaultSaveRefreshTokenUseCase: DefaultSaveRefreshTokenUseCase,
-) : ViewModel(){
+) : ViewModel() {
+    val uiState: StateFlow<MainActivityUiState> = userDataRepository.userData
+        .map {
+            MainActivityUiState.Success(it)
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = MainActivityUiState.Loading
+        )
+
     fun saveAccessToken(accessToken: String) =
         viewModelScope.launch {
             defaultSaveAccessTokenUseCase.invoke(accessToken)

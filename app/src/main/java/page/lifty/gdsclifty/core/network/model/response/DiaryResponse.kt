@@ -14,4 +14,5 @@ data class DiaryData(
     val date: String,
     val content: String,
     val keywords: List<String>,
+    var isExpanded:Boolean = true,
 )
